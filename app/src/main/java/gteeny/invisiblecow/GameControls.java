@@ -88,10 +88,11 @@ public class GameControls implements OnTouchListener {
             _dragging = false;
         }
 
-        if ( _dragging ){
+        if ( _dragging ) {
             // get the pos
-            _touchingPoint.x = (int)event.getX();
-            _touchingPoint.y = (int)event.getY();
+            _touchingPoint.x = (int) event.getX();
+            _touchingPoint.y = (int) event.getY();
+        }
 
         if(_touchingPoint.x > cowbellMinX && _touchingPoint.x < cowbellMaxX
                 && _touchingPoint.y > cowbellMinY && _touchingPoint.y < cowbellMaxY) {
@@ -117,13 +118,13 @@ public class GameControls implements OnTouchListener {
             // the joystick is dragged from its center
             _pointerPosition.y += Math.sin(angle * (Math.PI / 180)) * (_touchingPoint.x / 70);
             _pointerPosition.x += Math.cos(angle * (Math.PI / 180)) * (_touchingPoint.x / 70);
-	}
-	
+
+
             fb.child("player" + player).child("x").setValue(_pointerPosition.x);
             fb.child("player" + player).child("y").setValue(_pointerPosition.y);
-
-            int distance = (int) Math.round(Math.sqrt(Math.pow(invisibleCowPosition.x -_pointerPosition.x, 2) +
-                    Math.pow(invisibleCowPosition.y - _pointerPosition.y, 2)));
+        }
+        int distance = (int) Math.round(Math.sqrt(Math.pow(invisibleCowPosition.x -_pointerPosition.x, 2) +
+                Math.pow(invisibleCowPosition.y - _pointerPosition.y, 2)));
 
         //drag drop
         if ( event.getAction() == MotionEvent.ACTION_DOWN ){
