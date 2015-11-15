@@ -81,18 +81,10 @@ public class GameControls implements OnTouchListener {
         } else {
             lastEvent = event;
         }
-        //drag drop
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            _dragging = true;
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            _dragging = false;
-        }
 
-        if ( _dragging ) {
-            // get the pos
-            _touchingPoint.x = (int) event.getX();
-            _touchingPoint.y = (int) event.getY();
-        }
+        // get the pos
+        _touchingPoint.x = (int) event.getX();
+        _touchingPoint.y = (int) event.getY();
 
         if(_touchingPoint.x > cowbellMinX && _touchingPoint.x < cowbellMaxX
                 && _touchingPoint.y > cowbellMinY && _touchingPoint.y < cowbellMaxY) {
