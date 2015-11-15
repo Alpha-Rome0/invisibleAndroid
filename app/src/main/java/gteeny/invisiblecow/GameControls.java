@@ -1,6 +1,7 @@
 package gteeny.invisiblecow;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -8,6 +9,11 @@ import android.view.View.OnTouchListener;
 public class GameControls implements OnTouchListener {
     int width;
     int height;
+    private Mooer cow;
+
+    public GameControls(Mooer cow) {
+        this.cow = cow;
+    }
 
     public void setWidth(int width) {
         this.width = width;
@@ -25,6 +31,7 @@ public class GameControls implements OnTouchListener {
     private int maxy = inity+radius;
     public Point _touchingPoint = new Point(initx,inity);
     public Point _pointerPosition = new Point(220,150);
+    public Point invisibleCowPosition = new Point(500, 500);
     private Boolean _dragging = false;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -70,8 +77,11 @@ public class GameControls implements OnTouchListener {
             _pointerPosition.y += Math.sin(angle * (Math.PI / 180))*(_touchingPoint.x/70);
             _pointerPosition.x += Math.cos(angle * (Math.PI / 180))*(_touchingPoint.x/70);
 
+            int distance = (int) Math.round(Math.sqrt(Math.pow(invisibleCowPosition.x -_pointerPosition.x, 2) +
+                    Math.pow(invisibleCowPosition.y - _pointerPosition.y, 2)));
 
-
+            Log.i("debug", "" + _pointerPosition.x + " " + _pointerPosition.y + " " + distance);
+            cow.moo(distance);
 
             //make the pointer go thru
             if ( _pointerPosition.x > width)

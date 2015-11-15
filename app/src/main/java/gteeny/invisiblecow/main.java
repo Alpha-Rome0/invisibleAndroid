@@ -9,10 +9,12 @@ public class main extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
+        Mooer cow = Mooer.getInstance(getApplicationContext());
+
         //set to full screen 
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,   
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(new GameSurface(this));
+        setContentView(new GameSurface(this, cow));
     }
 }

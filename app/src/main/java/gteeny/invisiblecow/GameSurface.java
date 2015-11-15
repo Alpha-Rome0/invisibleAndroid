@@ -15,14 +15,15 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 	private GameControls _controls;
 
 	private GameJoystick _joystick;
-
+	private Mooer cow;
 
 	private Bitmap _pointer;
 
-	public GameSurface(Context context) {
+	public GameSurface(Context context, Mooer cow) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		_context = context;
+		this.cow = cow;
 		init();
 	}
 
@@ -41,7 +42,7 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 		_joystick = new GameJoystick(getContext().getResources());
 		_pointer = (Bitmap)BitmapFactory.decodeResource(getResources(), R.drawable.icon);
 		//contols
-		_controls = new GameControls();
+		_controls = new GameControls(cow);
 		setOnTouchListener(_controls);
 	}
 
