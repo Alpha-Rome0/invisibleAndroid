@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.Toast;
 
 public class GameControls implements OnTouchListener {
     int width;
@@ -32,6 +33,13 @@ public class GameControls implements OnTouchListener {
     public Point _touchingPoint = new Point(initx,inity);
     public Point _pointerPosition = new Point(220,150);
     public Point invisibleCowPosition = new Point(500, 500);
+    private int cowbellRadius = 100;
+    private int cowbellX = 100;
+    private int cowbellY = 1100;
+    private int cowbellMinX = cowbellX-cowbellRadius;
+    private int cowbellMaxX = cowbellX+cowbellRadius;
+    private int cowbellMinY = cowbellY-cowbellRadius;
+    private int cowbellMaxY = cowbellY+cowbellRadius;
     private Boolean _dragging = false;
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -51,35 +59,62 @@ public class GameControls implements OnTouchListener {
         }else{
             lastEvent = event;
         }
-        //drag drop
-        if ( event.getAction() == MotionEvent.ACTION_DOWN ){
-            _dragging = true;
-        }else if ( event.getAction() == MotionEvent.ACTION_UP){
-            _dragging = false;
+
+
+
+        // get the pos
+        _touchingPoint.x = (int)event.getX();
+        _touchingPoint.y = (int)event.getY();
+
+        if(_touchingPoint.x > cowbellMinX && _touchingPoint.x < cowbellMaxX
+                && _touchingPoint.y > cowbellMinY && _touchingPoint.y < cowbellMaxY) {
+            if (_dragging) {
+                // bound to a box
+                _touchingPoint.x = initx;
+                _touchingPoint.y = inity;
+                return;
+            }
         }
 
-        if ( _dragging ){
-            // get the pos
-            _touchingPoint.x = (int)event.getX();
-            _touchingPoint.y = (int)event.getY();
-
+        if (_dragging) {
             // bound to a box
             _touchingPoint.x = Math.min(maxx,
                     Math.max(minx, _touchingPoint.x));
             _touchingPoint.y = Math.min(maxy,
                     Math.max(miny, _touchingPoint.y));
-
-            //get the angle
-            double angle = Math.atan2(_touchingPoint.y - inity,_touchingPoint.x - initx)/(Math.PI/180);
-
+        }
+        //get the angle
+        double angle = Math.atan2(_touchingPoint.y - inity, _touchingPoint.x - initx) / (Math.PI / 180);
+        if (_dragging) {
             // Move the beetle in proportion to how far
             // the joystick is dragged from its center
-            _pointerPosition.y += Math.sin(angle * (Math.PI / 180))*(_touchingPoint.x/70);
-            _pointerPosition.x += Math.cos(angle * (Math.PI / 180))*(_touchingPoint.x/70);
+            _pointerPosition.y += Math.sin(angle * (Math.PI / 180)) * (_touchingPoint.x / 70);
+            _pointerPosition.x += Math.cos(angle * (Math.PI / 180)) * (_touchingPoint.x / 70);
+        }
+        int distance = (int) Math.round(Math.sqrt(Math.pow(invisibleCowPosition.x -_pointerPosition.x, 2) +
+                Math.pow(invisibleCowPosition.y - _pointerPosition.y, 2)));
 
-            int distance = (int) Math.round(Math.sqrt(Math.pow(invisibleCowPosition.x -_pointerPosition.x, 2) +
-                    Math.pow(invisibleCowPosition.y - _pointerPosition.y, 2)));
+        //drag drop
+        if ( event.getAction() == MotionEvent.ACTION_DOWN ){
+            _dragging = true;
+            Log.i("yo", _touchingPoint.x + ">" + cowbellMinX + "&&" + _touchingPoint.x + "<" + cowbellMaxX
+                    + "&&" + _touchingPoint.y + ">" + cowbellMinY + "&&" +  _touchingPoint.y + "<" + cowbellMaxY);
+            if(_touchingPoint.x > cowbellMinX && _touchingPoint.x < cowbellMaxX
+                    && _touchingPoint.y > cowbellMinY && _touchingPoint.y < cowbellMaxY) {
+                if(distance < 50) {
+                    Log.i("yo","==========================You win===========================");
+                }
+                else {
+                    Log.i("yo","=====================================================>");
+                }
+            }
+            return;
 
+        }else if ( event.getAction() == MotionEvent.ACTION_UP){
+            _dragging = false;
+        }
+
+        if ( _dragging ){
             Log.i("debug", "" + _pointerPosition.x + " " + _pointerPosition.y + " " + distance);
             cow.moo(distance);
 
