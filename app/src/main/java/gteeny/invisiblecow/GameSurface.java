@@ -20,7 +20,8 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
 	private GameJoystick _joystick;
 	private Mooer cow;
 
-    private Bitmap _pointer;
+	private Bitmap _pointer;
+	private Bitmap cowbell;
 
     public GameSurface(Context context, Mooer cow, Firebase fb) {
         super(context);
@@ -43,20 +44,22 @@ public class GameSurface extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
 
 
-        _joystick = new GameJoystick(getContext().getResources());
-        _pointer = (Bitmap) BitmapFactory.decodeResource(getResources(), R.drawable.icon);
-        //contols
-        _controls = new GameControls(cow, fb);
-        setOnTouchListener(_controls);
+		_joystick = new GameJoystick(getContext().getResources());
+		_pointer = (Bitmap)BitmapFactory.decodeResource(getResources(), R.drawable.icon);
+		cowbell = (Bitmap)BitmapFactory.decodeResource(getResources(), R.drawable.cowbell);
+		//controls
+		_controls = new GameControls(cow, fb);
+		setOnTouchListener(_controls);
 	}
 
     public void doDraw(Canvas canvas) {
 
-        //update the pointer
-        _controls.update(null);
-
-        //draw the pointer
-        canvas.drawBitmap(_pointer, _controls._pointerPosition.x, _controls._pointerPosition.y, null);
+		//update the pointer
+		_controls.update(null);
+		
+		//draw the pointer
+		canvas.drawBitmap(_pointer, _controls._pointerPosition.x, _controls._pointerPosition.y, null);
+		canvas.drawBitmap(cowbell, 100, 1100, null);
 
         //draw the joystick background
         canvas.drawBitmap(_joystick.get_joystickBg(), 500, 1050, null);
