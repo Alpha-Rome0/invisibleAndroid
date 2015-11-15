@@ -2,6 +2,8 @@ package gteeny.invisiblecow;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+
+import java.io.InputStream;
+
 import gteeny.invisiblecow.util.SystemUiHider;
 
 /**
@@ -51,6 +56,9 @@ public class FullscreenActivity extends Activity {
      * The instance of the {@link SystemUiHider} for this activity.
      */
     private SystemUiHider mSystemUiHider;
+    private MediaPlayer[] cowsounds;
+    private int delta = 15;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,13 +127,35 @@ public class FullscreenActivity extends Activity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
+        cowsounds = new MediaPlayer[10];
+        int[] rawFiles = new int[] {R.raw.cow1, R.raw.cow2,
+                R.raw.cow3, R.raw.cow4,
+                R.raw.cow5, R.raw.cow6,
+                R.raw.cow7, R.raw.cow8,
+                R.raw.cow9, R.raw.cow10
+        };
 
+        for (int i=0; i < 10; i++) {
+            cowsounds[i] = MediaPlayer.create(getApplicationContext(), rawFiles[i]);
+        }
+
+
+        final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.cow1);
         findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
         Button myButton=(Button)findViewById(R.id.dummy_button);
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),str, Toast.LENGTH_LONG).show();
+                playSound(delta * counter);
+                counter++;
+            }
+        });
+
+        Button myOtherButton = (Button) findViewById(R.id.button2);
+        myOtherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cowsounds[1].start();
             }
         });
 
@@ -188,4 +218,11 @@ public class FullscreenActivity extends Activity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
+
+    public void playSound(int distance){
+        cowsounds[Math.min(9, Math.max(10-distance/delta, 1))].start();
+        Toast.makeText(getApplicationContext(), ""+(Math.min(9, Math.max(10-distance/delta, 1))), Toast.LENGTH_LONG).show();
+    }
+
+
 }
